@@ -7,39 +7,9 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        fromService:
-          type: web
-          name: zocialone-backend
-          property: port
-      - key: DB_HOST
-        fromDatabase:
-          name: zocialone-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: zocialone-db
-          property: port
-      - key: DB_USERNAME
-        fromDatabase:
-          name: zocialone-db
-          property: user
-      - key: DB_PASSWORD
-        fromDatabase:
-          name: zocialone-db
-          property: password
-      - key: DB_NAME
-        fromDatabase:
-          name: zocialone-db
-          property: database
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
         value: 24h
       - key: REMINDER_CRON_SCHEDULE
         value: "*/10 * * * *"
-
-databases:
-  - name: zocialone-db
-    databaseName: zocialone
-    user: zocialone

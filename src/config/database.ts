@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
   database: config.database.database,
   
   // Auto-create tables in development only
-  synchronize: config.nodeEnv === 'development',
+  synchronize: true, // Enable for demo purposes
   
   // Show SQL queries in development
   logging: config.nodeEnv === 'development',

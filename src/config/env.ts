@@ -8,11 +8,11 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   
   database: {
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432'),
-    username: process.env.DB_USERNAME || 'postgres',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'zocialone',
+    host: process.env.DATABASE_URL ? new URL(process.env.DATABASE_URL).hostname : (process.env.DB_HOST || 'localhost'),
+    port: process.env.DATABASE_URL ? parseInt(new URL(process.env.DATABASE_URL).port) : parseInt(process.env.DB_PORT || '5432'),
+    username: process.env.DATABASE_URL ? new URL(process.env.DATABASE_URL).username : (process.env.DB_USERNAME || 'postgres'),
+    password: process.env.DATABASE_URL ? new URL(process.env.DATABASE_URL).password : (process.env.DB_PASSWORD || ''),
+    database: process.env.DATABASE_URL ? new URL(process.env.DATABASE_URL).pathname.slice(1) : (process.env.DB_NAME || 'zocialone'),
   },
   
   jwt: {
