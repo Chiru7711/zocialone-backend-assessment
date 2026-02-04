@@ -19,6 +19,9 @@ export const AppDataSource = new DataSource({
   // Show SQL queries in development
   logging: config.nodeEnv === 'development',
   
+  // Production SSL settings
+  ssl: config.nodeEnv === 'production' ? { rejectUnauthorized: false } : false,
+  
   // Register entity classes
   entities: [User, Complaint, Notification],
   migrations: [],

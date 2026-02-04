@@ -6,19 +6,31 @@ import { OnboardingCron } from './modules/onboarding/onboarding.cron';
 
 async function startServer() {
   try {
-    // Initialize database
-    await AppDataSource.initialize();
-    console.log('✅ Database connected successfully');
+    // Initialize database with retry logic for production
+    let retries = 5;
+    while (retries > 0) {
+      try {
+        await AppDataSource.initialize();
+        console.log('✅ Database connected successfully');
+        break;
+      } catch (error) {
+        console.log(`Database connection failed, retries left: ${retries - 1}`);
+        retries--;
+        if (retries === 0) throw error;
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    }
 
-    // Start cron jobs
+    // Start cron jobs only after database is connected
     const onboardingCron = new OnboardingCron();
     onboardingCron.start();
 
     // Start server
-    app.listen(config.port, () => {
-      console.log(`🚀 Server running on port ${config.port}`);
+    const port = config.port;
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`🚀 Server running on port ${port}`);
       console.log(`📊 Environment: ${config.nodeEnv}`);
-      console.log(`🔗 Health check: http://localhost:${config.port}/health`);
+      console.log(`🔗 Health check: http://localhost:${port}/health`);
     });
 
   } catch (error) {
