@@ -16,6 +16,29 @@ const authController = new AuthController();
 const userController = new UserController();
 const complaintController = new ComplaintController();
 
+// Welcome route
+app.get('/', (req, res) => {
+  res.json({
+    message: 'ZocialOne Backend API',
+    status: 'Running',
+    endpoints: {
+      health: '/health',
+      auth: {
+        register: 'POST /register',
+        login: 'POST /login'
+      },
+      user: {
+        details: 'GET /user/details (Protected)'
+      },
+      complaints: {
+        create: 'POST /complaints (Protected)',
+        updateStatus: 'PATCH /complaints/:id/status (Protected)',
+        getMetrics: 'GET /complaints/:id/metrics (Protected)'
+      }
+    }
+  });
+});
+
 // Public routes
 app.post('/register', authController.register);
 app.post('/login', authController.login);
