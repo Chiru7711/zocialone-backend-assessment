@@ -10,7 +10,7 @@ export interface AuthRequest extends Request {
 }
 
 // JWT authentication middleware
-export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Get token from Authorization header
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -33,7 +33,7 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
     }
 
     // Add user to request
-    req.user = user;
+    (req as AuthRequest).user = user;
     next();
   } catch (error) {
     res.status(401).json({ error: 'Invalid token.' });

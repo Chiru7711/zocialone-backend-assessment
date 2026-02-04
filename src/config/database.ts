@@ -7,22 +7,22 @@ import { Notification } from '../modules/notifications/notification.entity';
 // Database connection setup
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: config.database.host,
-  port: config.database.port,
-  username: config.database.username,
-  password: config.database.password,
-  database: config.database.database,
+  // Use DATABASE_URL if available (production), otherwise individual config (development)
+  ...(config.database.url ? 
+    { url: config.database.url } : 
+    {
+      host: config.database.host,
+      port: config.database.port,
+      username: config.database.username,
+      password: config.database.password,
+      database: config.database.database,
+    }
+  ),
   
-  // Auto-create tables in development only
-  synchronize: true, // Enable for demo purposes
-  
-  // Show SQL queries in development
+  synchronize: true, // Auto-create tables for demo
   logging: config.nodeEnv === 'development',
-  
-  // Production SSL settings
   ssl: config.nodeEnv === 'production' ? { rejectUnauthorized: false } : false,
   
-  // Register entity classes
   entities: [User, Complaint, Notification],
   migrations: [],
   subscribers: [],

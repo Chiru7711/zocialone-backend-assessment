@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { z } from 'zod';
 import { AuthRequest } from '../auth/auth.middleware';
 import { ComplaintService } from './complaint.service';
@@ -16,11 +16,11 @@ const updateStatusSchema = z.object({
 export class ComplaintController {
   private complaintService = new ComplaintService();
 
-  createComplaint = async (req: AuthRequest, res: Response) => {
+  createComplaint = async (req: Request, res: Response) => {
     try {
       const { complaint_type, metadata } = createComplaintSchema.parse(req.body);
       const complaint = await this.complaintService.createComplaint(
-        req.user!.id,
+        (req as AuthRequest).user!.id,
         complaint_type,
         metadata
       );
@@ -33,7 +33,7 @@ export class ComplaintController {
     }
   };
 
-  updateStatus = async (req: AuthRequest, res: Response) => {
+  updateStatus = async (req: Request, res: Response) => {
     try {
       const complaintId = parseInt(req.params.id);
       const { status } = updateStatusSchema.parse(req.body);
@@ -41,7 +41,7 @@ export class ComplaintController {
       const complaint = await this.complaintService.updateComplaintStatus(
         complaintId,
         status,
-        req.user!.id
+        (req as AuthRequest).user!.id
       );
       
       res.json({ message: `Complaint status updated to ${status} successfully`, data: complaint });
@@ -53,10 +53,10 @@ export class ComplaintController {
     }
   };
 
-  getMetrics = async (req: AuthRequest, res: Response) => {
+  getMetrics = async (req: Request, res: Response) => {
     try {
       const complaintId = parseInt(req.params.id);
-      const metrics = await this.complaintService.getComplaintMetrics(complaintId, req.user!.id);
+      const metrics = await this.complaintService.getComplaintMetrics(complaintId, (req as AuthRequest).user!.id);
       res.json({ message: 'Complaint metrics retrieved successfully', data: metrics });
     } catch (error) {
       res.status(404).json({ error: (error as Error).message });
