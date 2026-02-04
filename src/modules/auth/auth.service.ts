@@ -28,9 +28,11 @@ export class AuthService {
     await this.userRepository.save(user);
 
     // Generate token
-    const token = jwt.sign({ userId: user.id }, config.jwt.secret, {
-      expiresIn: config.jwt.expiresIn
-    });
+    const token = (jwt as any).sign(
+      { userId: user.id }, 
+      config.jwt.secret, 
+      { expiresIn: config.jwt.expiresIn }
+    );
 
     return { user: { id: user.id, name: user.name, email: user.email }, token };
   }
@@ -49,9 +51,11 @@ export class AuthService {
     }
 
     // Generate token
-    const token = jwt.sign({ userId: user.id }, config.jwt.secret, {
-      expiresIn: config.jwt.expiresIn
-    });
+    const token = (jwt as any).sign(
+      { userId: user.id }, 
+      config.jwt.secret, 
+      { expiresIn: config.jwt.expiresIn }
+    );
 
     return { user: { id: user.id, name: user.name, email: user.email }, token };
   }
